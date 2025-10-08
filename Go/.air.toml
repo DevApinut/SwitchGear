@@ -1,0 +1,17 @@
+# .air.toml
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  cmd = "go build -o main.exe ./cmd/server/"
+  bin = "main.exe"
+  include_ext = ["go"]
+  exclude_dir = ["tmp", "vendor"]
+  delay = 1000
+  stop_on_error = true
+
+[log]
+  time = true
+
+[color]
+  main = "yellow"

@@ -44,3 +44,20 @@ services:
         condition: service_healthy
     restart: unless-stopped 
   
+   redis:
+    container_name: redis
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    restart: on-failure
+    environment:
+      - REDIS_PORT=6379
+      - REDIS_USERNAME=redis_user
+      - REDIS_PASSWORD=redis_password
+      - REDIS_DB=0
+    volumes:
+      - redis-data:/data
+    command:
+      - redis-server --requirepass redis_password --port 6379 --bind 0.0.0.0 --save 60 1 --loglevel warning
+volumes:
+  redis-data:
