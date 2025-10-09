@@ -40,11 +40,12 @@ func LoadFromEnv() (*Config, error) {
 	}
 	return &Config{
 		Auth: auth.Config{
-			BaseURL:      os.Getenv("AUTH_BASE_URL"),
-			ClientID:     os.Getenv("AUTH_CLIENT_ID"),
-			RedirectURL:  os.Getenv("AUTH_REDIRECT_URL"),
-			ClientSecret: os.Getenv("AUTH_CLIENT_SECRET"),
-			Realm:        os.Getenv("AUTH_ENVIRONMENT"),
+			BaseURL:        os.Getenv("AUTH_BASE_URL"),
+			ClientID:       os.Getenv("AUTH_CLIENT_ID"),
+			RedirectURL:    os.Getenv("AUTH_REDIRECT_URL"),
+			ClientSecret:   os.Getenv("AUTH_CLIENT_SECRET"),
+			Realm:          os.Getenv("AUTH_ENVIRONMENT"),
+			LogoutRedirect: os.Getenv("AUTH_REDIRECT_URL_LOGOUT"),
 		},
 		RedisConfig: redis.Options{
 			Addr:     fmt.Sprintf("%s:%s", os.Getenv("REDIS_HOST"), os.Getenv("REDIS_PORT")),

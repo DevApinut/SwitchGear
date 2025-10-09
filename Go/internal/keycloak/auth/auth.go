@@ -16,11 +16,12 @@ type Client struct {
 	// State        string
 }
 type Config struct {
-	BaseURL      string // Authorization base url
-	ClientID     string // client id oauth
-	RedirectURL  string // valid redirect url
-	ClientSecret string // optional
-	Realm        string // keycloak realm
+	BaseURL        string // Authorization base url
+	ClientID       string // client id oauth
+	RedirectURL    string // valid redirect url
+	ClientSecret   string // optional
+	Realm          string // keycloak realm
+	LogoutRedirect string
 }
 type Option func(*Config)
 

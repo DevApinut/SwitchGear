@@ -43,6 +43,9 @@ func (a *authRedisManager) GetState(ctx context.Context, state string) (string, 
 }
 
 func (a *authRedisManager) DeleteState(ctx context.Context, state string) error {
-	// TODO: Implement Redis logic
+	err := a.client.Del(ctx, state).Err()
+	if err != nil {
+		return err
+	}
 	return nil
 }

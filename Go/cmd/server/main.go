@@ -65,7 +65,8 @@ func main() {
 	r.GET("/login-keycloak", authHandler.RedirectToKeycloak)
 	// r.GET("/login-keycloak", authHandler.RedirectToKeycloak)
 	r.GET("/logout", authHandler.Logout)
-	r.GET("/auth/callback", authHandler.Callback)
+	r.GET("/callback-logout", authHandler.CallbackLogout)
+	r.GET("/callback", authHandler.Callback)
 	r.GET("/callback-auth", authHandler.Callback)
 
 	// Protected routes

@@ -42,6 +42,16 @@ func (a *AuthHandler) Callback(c *gin.Context) {
 		})
 		return
 	}
+	// Set id_token as a secure, HTTP-only cookie for logout
+	c.SetCookie(
+		"id_token",           // name
+		oidcToken.rawIDToken, // value
+		3600,                 // maxAge (1 hour)
+		"/",                  // path
+		"",                   // domain
+		true,                 // secure
+		true,                 // httpOnly
+	)
 	var userInfoClaims *userInfoClaims
 	userInfoClaims, err = oidcToken.getClaims(c)
 	if err != nil {

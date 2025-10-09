@@ -55,5 +55,23 @@ func (a *AuthHandler) RenderLoginPage(c *gin.Context) {
 }
 
 func (a *AuthHandler) Logout(c *gin.Context) {
-	c.Redirect(http.StatusFound, "http://localhost:8080/realms/Devpool_project/protocol/openid-connect/logout")
+	// Get id_token from cookie for id_token_hint
+	idToken, err := c.Cookie("id_token")
+	if err != nil || idToken == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing id_token for logout"})
+		return
+	}
+	logoutURL := fmt.Sprintf(
+		"http://localhost:8080/realms/Devpool_project/protocol/openid-connect/logout?id_token_hint=%s&post_logout_redirect_uri=%s",
+		idToken,
+		a.cfg.Auth.LogoutRedirect,
+	)
+	// Optionally clear cookies
+	c.SetCookie("id_token", "", -1, "/", "", true, true)
+	c.SetCookie("session_id", "", -1, "/", "", true, true)
+	c.SetCookie("user_email", "", -1, "/", "", true, true)
+	c.Redirect(http.StatusFound, logoutURL)
+}
+func (a *AuthHandler) CallbackLogout(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"Message": "Logout Success"})
 }
