@@ -67,7 +67,7 @@ func main() {
 	r.GET("/logout", authHandler.Logout)
 	r.GET("/callback-logout", authHandler.CallbackLogout)
 	r.GET("/callback", authHandler.Callback)
-	r.GET("/callback-auth", authHandler.Callback)
+	// r.GET("/callback-auth", authHandler.Callback)
 
 	// Protected routes
 	protected := r.Group("/")

@@ -62,7 +62,9 @@ func (a *AuthHandler) Logout(c *gin.Context) {
 		return
 	}
 	logoutURL := fmt.Sprintf(
-		"http://localhost:8080/realms/Devpool_project/protocol/openid-connect/logout?id_token_hint=%s&post_logout_redirect_uri=%s",
+		"%s/realms/%s/protocol/openid-connect/logout?id_token_hint=%s&post_logout_redirect_uri=%s",
+		a.cfg.Auth.BaseURL,
+		a.cfg.Auth.Realm,
 		idToken,
 		a.cfg.Auth.LogoutRedirect,
 	)
@@ -73,5 +75,9 @@ func (a *AuthHandler) Logout(c *gin.Context) {
 	c.Redirect(http.StatusFound, logoutURL)
 }
 func (a *AuthHandler) CallbackLogout(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"Message": "Logout Success"})
+	state := c.Query("state")
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Logout Success",
+		"state":   state,
+	})
 }
