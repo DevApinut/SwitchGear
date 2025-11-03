@@ -14,13 +14,13 @@ func (a *AuthHandler) Callback(c *gin.Context) {
 	callbackData, err := newCallbackData(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error1": err.Error(),
+			"error": err.Error(),
 		})
 		return
 	}
 	if err = callbackData.verify(c, a.authStore); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error2": err.Error(),
+			"error": err.Error(),
 		})
 	}
 	opts := []oauth2.AuthCodeOption{
