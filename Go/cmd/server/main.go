@@ -29,6 +29,7 @@ func main() {
 		auth.WithClientSecret(cfg.Auth.ClientSecret),
 		auth.WithRealmKeycloak(cfg.Auth.Realm),
 	}
+
 	authClient, err := auth.New(
 		ctx,
 		cfg.Auth.BaseURL,
@@ -40,6 +41,7 @@ func main() {
 		log.Fatalf("Failed to initialize auth client : %v", err)
 		return
 	}
+
 	// Redis
 	redisClient := redis.NewClient(&cfg.RedisConfig)
 	if err := redisClient.Ping(ctx).Err(); err != nil {
@@ -47,10 +49,10 @@ func main() {
 		return
 	}
 	defer redisClient.Close()
-	r := gin.Default()
+	router := gin.Default()
 	// Load HTML templates from internal/templates
 	// Using relative path from where you run the application
-	r.LoadHTMLGlob("./internal/keycloak/templates/*/*.tmpl")
+	router.LoadHTMLGlob("./internal/keycloak/templates/*/*.tmpl")
 
 	authStore := rds.NewAuthRedisManager(redisClient)
 	sessionStore := rds.NewSessionRedisManager(redisClient)
@@ -61,22 +63,24 @@ func main() {
 		sessionStore,
 	)
 	renderHandler := render.New(cfg)
-	r.GET("/login", authHandler.RenderLoginPage)
-	r.GET("/login-keycloak", authHandler.RedirectToKeycloak)
+
+	group := router.Group("/api/v1")
+	group.GET("/login", authHandler.RenderLoginPage)
+	group.GET("/login-keycloak", authHandler.RedirectToKeycloak)
 	// r.GET("/login-keycloak", authHandler.RedirectToKeycloak)
-	r.GET("/logout", authHandler.Logout)
-	r.GET("/callback-logout", authHandler.CallbackLogout)
-	r.GET("/callback", authHandler.Callback)
+	group.GET("/logout", authHandler.Logout)
+	group.GET("/callback-logout", authHandler.CallbackLogout)
+	group.GET("/callback", authHandler.Callback)
 	// r.GET("/callback-auth", authHandler.Callback)
 
 	// Protected routes
-	protected := r.Group("/")
+	protected := router.Group("/")
 	protected.Use(middleware.AuthMiddleware(sessionStore, authClient))
 	{
 		protected.GET("/success-login", renderHandler.SuccessLogin)
 		// Add other protected routes here
 	}
-	if err := r.Run(serverAddr); err != nil {
+	if err := router.Run(serverAddr); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 
