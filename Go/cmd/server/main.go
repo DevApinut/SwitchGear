@@ -64,15 +64,19 @@ func main() {
 	)
 	renderHandler := render.New(cfg)
 
-	group := router.Group("/api/v1")
-	group.GET("/login", authHandler.RenderLoginPage)
-	group.GET("/login-keycloak", authHandler.RedirectToKeycloak)
+	// group.GET("/login", authHandler.RenderLoginPage)
+	// group.GET("/login-keycloak", authHandler.RedirectToKeycloak)
 	// r.GET("/login-keycloak", authHandler.RedirectToKeycloak)
+	// Group for handler path keycloak
+	group := router.Group("/api/v1")
+	group.GET("/login", authHandler.RedirectToKeycloak)
 	group.GET("/logout", authHandler.Logout)
 	group.GET("/callback-logout", authHandler.CallbackLogout)
 	group.GET("/callback", authHandler.Callback)
-	// r.GET("/callback-auth", authHandler.Callback)
+	// group.GET("/callback-auth", authHandler.Callback)
 
+	// route for doc reader
+	// group.GET("/upload/doc",docHandler.upload)
 	// Protected routes
 	protected := router.Group("/")
 	protected.Use(middleware.AuthMiddleware(sessionStore, authClient))
