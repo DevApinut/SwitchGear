@@ -17,3 +17,7 @@ func NewHandler(db *gorm.DB) *Handler {
 		Service: NewService(db),
 	}
 }
+
+func Upload() error {
+	return nil
+}
